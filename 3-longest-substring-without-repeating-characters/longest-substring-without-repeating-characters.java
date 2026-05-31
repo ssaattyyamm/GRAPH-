@@ -8,17 +8,20 @@ class Solution {
         HashMap<Character,Integer> map = new HashMap<>();
 
         int ans = 0;
-        
+
         while(j < n){
             char ch = s.charAt(j);
 
-            if(map.containsKey(ch) && i <= map.get(ch)){
-                i = map.get(ch) +1;
+            //shrinking condn : 
+            if(map.containsKey(ch) && map.get(ch) >= i){
+                i = map.get(ch) + 1;
             }
-            ans = Math.max(ans , j-i+1);
+
             map.put(ch , j);
+            ans = Math.max(ans , j - i + 1);
             j++;
         }
+
         return ans;
     }
 }
