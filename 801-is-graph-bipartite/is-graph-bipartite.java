@@ -1,6 +1,12 @@
-//Approach : we can use both bfs and dfs in this porblem im using dfs : im using color array which 
-//helps me in tracking and colors of visited node : if the color of the visited node is same to current color , then thiss violates the concept of biparitite graph : then im returning false otherwise true
+class Pair{
+    int val;
+    int color;
 
+    public Pair(int val , int color){
+        this.val = val;
+        this.color = color;
+    }
+}
 class Solution {
     public boolean isBipartite(int[][] graph) {
         int n = graph.length; // no of vertices
@@ -22,21 +28,35 @@ class Solution {
         // connected componenet concept : 
         for(int i=0;i<n;i++){
             if(colors[i] == -1){
-                if(dfs(i ,adj , 0 , colors) == false) return false;
+                if(bfs(i ,adj , 0 , colors) == false) return false;
             }
         }
-
         return true;
     }
-    public boolean dfs(int node ,ArrayList<ArrayList<Integer>> adj , int color , int[] visited){
+    public boolean bfs(int node , ArrayList<ArrayList<Integer>> adj , int color , int[] visited){
+        Queue<Pair> q = new LinkedList<>();
+
         visited[node] = color;
 
-        for(Integer x : adj.get(node)){
-            if(visited[x] == color) return false;
+        q.add(new Pair(node , color));
 
-            else if(visited[x] == -1){
-                if(dfs(x ,adj,1 - color,visited) == false) return false;
-            }
+        while(q.size() > 0){
+            int n = q.peek().val;
+
+            int c = q.peek().color;
+
+            q.remove();
+
+            for(Integer x : adj.get(n)){
+                if(visited[x] == c) return false;
+
+                if(visited[x] == -1){
+                    visited[x] = 1 - c;
+
+                    q.add(new Pair(x , 1 - c));
+                }
+
+            } 
         }
 
         return true;
