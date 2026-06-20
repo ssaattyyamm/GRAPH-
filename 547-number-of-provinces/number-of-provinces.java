@@ -1,65 +1,42 @@
-class DSU{
-    int parent[];
-    int rank[];
-
-    public DSU(int n){
-        parent = new int[n];
-        rank = new int[n];
-
-        for(int i=0;i<n;i++){
-            parent[i] = i;
-            rank[i] = 0;
-        }
-    }
-    public int find(int u){
-        if(parent[u] == u) return u;
-
-        return parent[u] = find(parent[u]);
-    }
-
-    public void union(int u , int v){
-        int p1 = find(u);
-        int p2 = find(v);
-
-        int r1 = rank[p1];
-        int r2 = rank[p2];
-
-        if(p1 == p2) return;
-
-        if(r1 > r2){
-            parent[p2] = p1;
-        }
-        else if(r1 < r2){
-            parent[p1] = p2;
-        }
-        else{
-            parent[p1] = p2;
-            rank[p2]++;
-        }
-    }
-}
 class Solution {
     public int findCircleNum(int[][] arr) {
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+
         int n = arr.length;
 
-        DSU dsu = new DSU(n);
+        boolean visit[] = new boolean[n];
+
+        for(int i=0;i<n;i++){
+            adj.add(new ArrayList<>());
+        }
 
         for(int i=0;i<n;i++){
             for(int j=0;j<n;j++){
                 if(arr[i][j] == 1){
-                    dsu.union(i , j);
+                    adj.get(i).add(j);
                 }
             }
         }
-        int res =0;
 
+        int cnt = 0;
 
         for(int i=0;i<n;i++){
-            if(dsu.parent[i] == i){
-                res++;
+            if(!visit[i]){
+                cnt++;
+                dfs(i , visit , adj);
             }
         }
+        return cnt;
+    }
+    public void dfs(int v , boolean[] visit , ArrayList<ArrayList<Integer>> adj){
+        visit[v] = true;
 
-        return res;
+        for(int i=0;i<adj.get(v).size();i++){
+            int next = adj.get(v).get(i);
+
+            if(!visit[next]){
+                dfs(next , visit , adj);
+            }
+        }
     }
 }
