@@ -1,21 +1,19 @@
 class Pair{
-    int val;
+    int node;
     int color;
 
-    public Pair(int val , int color){
-        this.val = val;
+    public Pair(int node , int color){
+        this.node = node;
         this.color = color;
     }
 }
 class Solution {
     public boolean isBipartite(int[][] graph) {
-        int n = graph.length; // no of vertices
+        // bfs and dfs
 
-        int colors[] = new int[n]; // color array which also represennt the visited array
+        int n = graph.length;
 
-        Arrays.fill(colors , -1); // minus one fill 
-
-        ArrayList<ArrayList<Integer>> adj= new ArrayList<>();
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
 
         for(int i=0;i<n;i++){
             ArrayList<Integer> curr = new ArrayList<>();
@@ -25,40 +23,31 @@ class Solution {
             adj.add(curr);
         }
 
-        // connected componenet concept : 
+        int color[] = new int[n];
+
+        Arrays.fill(color , -1);
+
+
         for(int i=0;i<n;i++){
-            if(colors[i] == -1){
-                if(bfs(i ,adj , 0 , colors) == false) return false;
+            if(color[i] == -1){
+                if(dfs(i , adj , color , 0) == false) return false;
             }
         }
         return true;
     }
-    public boolean bfs(int node , ArrayList<ArrayList<Integer>> adj , int color , int[] visited){
-        Queue<Pair> q = new LinkedList<>();
+    public boolean dfs(int node ,ArrayList<ArrayList<Integer>> adj , int[] color , int c){
+        color[node] = c;
 
-        visited[node] = color;
+        for(int i=0;i<adj.get(node).size();i++){
+            int curr = adj.get(node).get(i);
 
-        q.add(new Pair(node , color));
-
-        while(q.size() > 0){
-            int n = q.peek().val;
-
-            int c = q.peek().color;
-
-            q.remove();
-
-            for(Integer x : adj.get(n)){
-                if(visited[x] == c) return false;
-
-                if(visited[x] == -1){
-                    visited[x] = 1 - c;
-
-                    q.add(new Pair(x , 1 - c));
-                }
-
-            } 
+            if(color[curr] == -1){
+                if(dfs(curr , adj , color , 1 - c) == false) return false;
+            }
+            else{
+                if(color[curr] == c) return false;
+            }
         }
-
         return true;
     }
 }
