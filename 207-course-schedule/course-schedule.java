@@ -1,45 +1,43 @@
 class Solution {
-    public boolean canFinish(int V, int[][] prerequisites) {
-        /// easy prblm anyone can do this : 
-
+    public boolean canFinish(int n, int[][] edges) {
         ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
 
-        for(int i=0;i<V;i++){
+        for(int i=0;i<n;i++){
             adj.add(new ArrayList<>());
         }
 
-        for(int e[] : prerequisites){
-            adj.get(e[0]).add(e[1]);
-        }
-
-        int indeg[] = new int[V];
-
-        for(int i=0;i<V;i++){
-            for(int x : adj.get(i)){
-                indeg[x]++;
-            }
-        }
+        int indeg[] = new int[n];
 
         Queue<Integer> queue = new LinkedList<>();
 
-        for(int i=0;i<V;i++){
-            if(indeg[i] == 0) queue.add(i);
+        for(int e[] : edges){
+            adj.get(e[1]).add(e[0]);
+            indeg[e[0]]++;
         }
 
-        ArrayList<Integer> res = new ArrayList<>();
+        for(int i=0;i<n;i++){
+            if(indeg[i] == 0){
+                queue.add(i);
+            }
+        }
+
+        ArrayList<Integer> res =new ArrayList<>();
 
         while(queue.size() > 0){
-            int curr = queue.peek();
+            int node = queue.peek();
+            res.add(node);
 
             queue.poll();
 
-            res.add(curr);
+            for(int i= 0;i<adj.get(node).size();i++){
+                int curr = adj.get(node).get(i);
 
-            for(int x : adj.get(curr)){
-                indeg[x]--;
-                if(indeg[x] == 0) queue.add(x);
+                indeg[curr]--;
+
+                if(indeg[curr] == 0) queue.add(curr);
             }
         }
-        return res.size() == V;
+
+        return res.size() == n;
     }
 }
