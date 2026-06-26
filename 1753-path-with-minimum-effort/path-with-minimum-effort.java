@@ -1,45 +1,41 @@
 class Tuple {
     int row;
     int col;
-    int max;
+    int cost;
 
-    public Tuple(int row , int col , int max){
+    public Tuple(int row, int col, int cost) {
         this.row = row;
         this.col = col;
-        this.max = max;
+        this.cost = cost;
     }
 }
 
 class Solution {
-    public int minimumEffortPath(int[][] heights) {
-        int inf = (int) 1e9;
-        int n = heights.length;
+    public int minimumEffortPath(int[][] arr){
+        int inf = (int)1e9;
 
-        int m = heights[0].length;
-        // nice question:
+        int n = arr.length;
+        int m = arr[0].length;
 
+        int dist[][] = new int[n][m];
 
-        int res[][] = new int[n][m];
-
-        for(int r[] : res){
-            Arrays.fill(r , inf);
+        for(int d[] : dist){
+            Arrays.fill(d,inf);
         }
 
-        res[0][0] = 0;
+        dist[0][0] = 0;
 
-        PriorityQueue<Tuple> pq = new PriorityQueue<>((a,b) -> a.max - b.max);
+        PriorityQueue<Tuple> pq = new PriorityQueue<>((a,b)-> a.cost - b.cost);
 
-        int row[] = {-1 , 0, 0,1};
+        pq.add(new Tuple(0 , 0 , 0));
+
+        int row[] = {-1, 0 ,0 ,1};
         int col[] = {0,-1,1,0};
-
-        pq.add(new Tuple(0,0,0));
-
-        // int res = Integer.MAX_VALUE;
 
         while(pq.size() > 0){
             int r = pq.peek().row;
             int c = pq.peek().col;
-            int max = pq.peek().max;
+            int cost = pq.peek().cost;
 
             pq.poll();
 
@@ -47,18 +43,16 @@ class Solution {
                 int nr = r + row[i];
                 int nc = c + col[i];
 
-                if(nr >= 0 && nr < n && nc >= 0 && nc < m){
-                    int diff = Math.abs(heights[nr][nc] - heights[r][c]);
+                // int dis = Math.abs(arr[r][c] - arr[nr][nc]);
 
-                    diff = Math.max(diff , max);
-
-                    if(diff < res[nr][nc]){
-                        res[nr][nc] = diff;
-                        pq.add(new Tuple(nr ,nc , diff));
-                    }
+                if(nr >= 0 && nr < n && nc >= 0 && nc < m && dist[nr][nc] > Math.max(cost ,Math.abs(arr[r][c] - arr[nr][nc]))){
+                    dist[nr][nc] =   Math.max(cost ,Math.abs(arr[r][c] - arr[nr][nc]));
+                    System.out.println(dist[nr][nc]);
+                    pq.add(new Tuple(nr , nc , dist[nr][nc]));
                 }
             }
         }
-        return res[n-1][m-1];
+
+        return dist[n-1][m-1] ; 
     }
 }
