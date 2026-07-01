@@ -14,24 +14,21 @@ class Solution {
 
         // 1 2 2 3 
 
-        while(l < r){
+        while(l <= r){
             int p1 = people[l];
 
             int p2 = people[r];
 
-            if(p1 + p2 > limit){
-                cnt++;
-                r--;
+            if(p1 + p2 <= limit){
+               l++;
             }
-            else{
-                l++;
-                r--;
-                cnt++;
-            }
+            r--;
+            cnt++;
         }
         //1 2 2 3  limit = 3
-        if(r - l == 0) cnt++;
-        else if(l < r) cnt+=(r-l-1);
+        // if(r - l == 0) cnt++;
+        // else if(l < r) cnt+=(r-l-1);
+        //3 3 4 5 
 
         return cnt;
     }
