@@ -1,42 +1,29 @@
 class Solution {
-    int dp[] , dp2[];
     public int rob(int[] nums) {
-        // do option either i choose the first or i choose the last 
         int n = nums.length;
 
         if(n == 1) return nums[0];
 
-        dp = new int[n];
+        if(n  == 2) return Math.max(nums[0] , nums[1]);
 
-        dp2 = new int[n];
+        int dp[] = new int[n-1];
 
-        Arrays.fill(dp , -1);
+        int d[] = new int[n-1];
 
-        Arrays.fill(dp2, -1);
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0] , nums[1]);
 
-        return  Math.max(helper(nums , 0) , helper1(nums  , 1));
+        d[0] = nums[1];
+        d[1] = Math.max(nums[1] , nums[2]);
 
-    }
-    public int helper(int[] nums , int idx){
-        if(idx >= nums.length-1) return 0;
+        for(int i=2;i<n-1;i++){
+            dp[i] = Math.max(nums[i] + dp[i-2] , dp[i-1]);
+        }
 
-        if(dp[idx] != -1) return dp[idx];
+        for(int i=3;i<n;i++){
+            d[i-1] = Math.max(nums[i] + d[i-3] , d[i-2]);
+        }
 
-        int pick = nums[idx] + helper(nums , idx +2);
-
-        int skip = helper(nums , idx +1);
-
-        return dp[idx] = Math.max(pick , skip);
-    }
-    public int helper1(int[] nums , int idx){
-        if(idx >= nums.length) return 0;
-
-        if(dp2[idx] != -1) return dp2[idx];
-
-        int pick = nums[idx] + helper1(nums , idx +2);
-
-        int skip = helper1(nums , idx +1);
-
-        return dp2[idx] = Math.max(pick , skip);
+        return Math.max(dp[n-2] , d[n-2]);
     }
 }
