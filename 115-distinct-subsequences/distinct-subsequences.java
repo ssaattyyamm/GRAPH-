@@ -1,32 +1,33 @@
 class Solution {
+    int n , m ;
+    int dp[][];
     public int numDistinct(String s, String t) {
-        int n = s.length();
-        int m = t.length();
+        n = s.length();
+        m = t.length();
 
-        int dp[][] = new int[n+1][m+1];
+        dp = new int[n][m];
 
-        for(int i=0;i<=n;i++){
-            Arrays.fill(dp[i],-1);
+        for(int i=0;i<n;i++){
+            Arrays.fill(dp[i] , -1);
         }
-        return helper(0,0,t,s,dp);
+
+        return helper(s , t, 0 , 0);
+
     }
-    public int helper(int idx , int x , String t , String s , int[][] dp ){
-        // pruning 
-        if(x == t.length()){
-            return 1;
-        }
-        // base case 
-        if(idx == s.length()){
-            return 0;
-        }
-        if(dp[idx][x]!= -1 ) return dp[idx][x];
+    public int helper(String s , String t , int i , int j){
+        if(j == m) return 1;
+        if(i == n) return 0;
 
-        int ans = helper(idx +1 , x, t,s,dp);
+        if(dp[i][j] != -1) return dp[i][j];
 
-        if(s.charAt(idx) == t.charAt(x)){
-            ans += helper(idx + 1,x + 1,t,s,dp);
+        int ans = 0;
+
+        if(s.charAt(i) == t.charAt(j)){
+            ans += helper(s , t, i +1 ,j +1);
         }
-
-        return dp[idx][x] =  ans;
+    
+        ans+= helper(s , t, i + 1 , j);
+        
+        return dp[i][j] =  ans;
     }
 }
