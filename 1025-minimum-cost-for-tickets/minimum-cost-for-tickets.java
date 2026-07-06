@@ -5,7 +5,7 @@ class Solution {
         int dp[] = new int[n+1];
 
         dp[n] = 0;
-        // dp[n-1] = Math.min(costs[0] , Math.min(costs[1] , costs[2]));
+        dp[n-1] = Math.min(costs[0] , Math.min(costs[1] , costs[2]));
 
         for(int i=n-1;i>=0;i--){
             // day 1
