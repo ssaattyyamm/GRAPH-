@@ -13,18 +13,37 @@ class Solution {
         for(int i=0;i<n;i++){
             for(int j=0;j<m;j++){
                 arr[i][j] = grid.get(i).get(j);
-                dp[i][j] = inf;
             }
         }
-        int res = Integer.MIN_VALUE;
 
-        for(int i=0;i<n;i++){
-            for(int j=0;j<m;j++){
-                res = Math.max(res , helper(i , j , arr));
+        dp[n-1][m-1] = inf;
+
+        int res = inf;
+
+        for(int i=n-1;i>=0;i--){
+            for(int j=m-1;j>=0;j--){
+                if(i == n-1 && j == m-1) continue;
+
+
+                int ans = inf;
+
+                for(int row = i + 1 ;row < n;row++){
+                    ans = Math.max(ans , arr[row][j] - arr[i][j]);
+                    ans = Math.max(ans , arr[row][j] - arr[i][j] + dp[row][j]);
+                }
+
+                for(int col = j + 1;col < m;col++){
+                    ans = Math.max(ans , arr[i][col] - arr[i][j]);
+                    ans = Math.max(ans , arr[i][col] - arr[i][j] + dp[i][col]);
+                }
+
+                dp[i][j] = ans;
+                res = Math.max(res , dp[i][j]);
             }
         }
 
         return res;
+       
     }
 
     public int helper(int row, int col, int[][] arr) {
