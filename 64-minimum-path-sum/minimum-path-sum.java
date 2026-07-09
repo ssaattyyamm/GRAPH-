@@ -1,28 +1,41 @@
 class Solution {
-    int dp[][];
-    public int minPathSum(int[][] arr) {
-        int m = arr.length;
-        int n = arr[0].length;
+    int n, m;
+    public int minPathSum(int[][] grid) {
+        n = grid.length;
+        m = grid[0].length;
 
-        dp = new int[m][n];
+        int dp[][] = new int[n][m];
 
-        for(int d[] : dp){
-            Arrays.fill(d , -1);
+        dp[n-1][m-1] = grid[n-1][m-1];
+
+        for(int i=n-1;i>=0;i--){
+            for(int j=m-1;j>=0;j--){
+                if(i == n-1 && j == m-1) continue;
+
+                int right = Integer.MAX_VALUE/2;
+                int bottom = Integer.MAX_VALUE/2;
+                if(i + 1 < n){
+                    right = grid[i][j] +dp[i+1][j];
+                }
+                if(j + 1 < m){
+                    bottom = grid[i][j] + dp[i][j+1];
+                }
+
+                dp[i][j] =  Math.min(right , bottom);
+            }
         }
-
-        return helper(0 , 0 , m , n , arr);
+        return dp[0][0];
     }
-    public int helper(int row , int col , int m , int n ,int[][] arr){
-        if(row == m-1 && col == n-1) return arr[row][col];
+    public int helper(int row, int col, int[][] grid) {
+        if (row >= n || col >= m)
+            return Integer.MAX_VALUE / 2;
 
-        if(row < 0 || row >=m || col < 0 || col >=n) return Integer.MAX_VALUE;
+        if (row == n - 1 && col == m - 1)
+            return grid[row][col];
 
-        if(dp[row][col] != -1) return dp[row][col];
+        int bottom = grid[row][col] + helper(row + 1, col, grid);
+        int right = grid[row][col] + helper(row, col + 1, grid);
 
-        int right = helper(row , col +1 , m , n ,arr);
-
-        int down = helper(row +1 , col , m , n , arr);
-
-        return  dp[row][col] = arr[row][col] + Math.min(right , down);
+        return Math.min(right, bottom);
     }
 }
