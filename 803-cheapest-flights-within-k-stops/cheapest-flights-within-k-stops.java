@@ -1,27 +1,27 @@
-class Tuple{
+class Tuple {
     int node;
-    int cost;
-    int stop;
+    int stops;
+    int wt;
 
-    public Tuple(int node , int cost , int stop){
+    public Tuple(int node, int stops, int wt) {
         this.node = node;
-        this.cost = cost;
-        this.stop = stop;
+        this.stops = stops;
+        this.wt = wt;
     }
 }
 class Pair{
     int node;
     int wt;
-    
+
     public Pair(int node , int wt){
         this.node = node;
         this.wt = wt;
     }
 }
-class Solution {
-    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {   
-        int inf = (int) 1e9;
 
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        int inf = (int) 1e9;
         ArrayList<ArrayList<Pair>> adj = new ArrayList<>();
 
         for(int i=0;i<n;i++){
@@ -29,47 +29,46 @@ class Solution {
         }
 
         for(int f[] : flights){
-            adj.get(f[0]).add(new Pair(f[1],f[2]));
+            adj.get(f[0]).add(new Pair(f[1] , f[2]));
         }
 
-        int dist[][] = new int[n][k+2];
+        int visit[][] = new int[n][1000];
 
-        for(int d[] : dist){
-            Arrays.fill(d , inf);
+        for(int v[] : visit){
+            Arrays.fill(v  , inf);
         }
 
-        for(int i=0;i<=k;i++){
-            dist[src][i] = 0;
-        }
+        PriorityQueue<Tuple> pq = new PriorityQueue<>((a,b) -> a.wt - b.wt);
 
-        Queue<Tuple> queue = new LinkedList<>();
+        visit[src][0] = 0;
 
-        queue.add(new Tuple(src , 0 , 0));
+        pq.add(new Tuple(src , 0 , 0));
 
-        while(queue.size() > 0){
-            int node = queue.peek().node;
-            int cost = queue.peek().cost;
-            int stop = queue.peek().stop;
+        while(pq.size() > 0){
+            Tuple t = pq.poll();
+            int node = t.node;
+            int stops = t.stops;
+            int wt = t.wt;
 
-            queue.poll();
+            if(stops  > k + 1) continue;
 
-            for(int i=0;i<adj.get(node).size();i++){
+            for(int i = 0 ; i < adj.get(node).size();i++){
                 int curr = adj.get(node).get(i).node;
-                int wt = adj.get(node).get(i).wt;
+                int cost = adj.get(node).get(i).wt;
 
-                if(stop + 1 < k + 2 && dist[curr][stop + 1] > (cost + wt)){
-                    dist[curr][stop+1] = cost + wt;
-                    queue.add(new Tuple(curr , cost + wt , stop + 1));
+                if(visit[curr][stops + 1]  > wt + cost){
+                    visit[curr][stops + 1] = wt + cost;
+                    pq.add(new Tuple(curr , stops + 1, visit[curr][stops + 1]));
                 }
             }
         }
 
-        int ans = inf;
+        int min = inf;
 
-        for(int i=0;i<=k+1;i++){
-            ans = Math.min(dist[dst][i], ans);
+        for(int i = 0 ; i <= k + 1;i++){
+            min = Math.min(min , visit[dst][i]);
         }
 
-        return ans == inf ? -1 : ans;
+        return min == inf ? -1 : min;
     }
 }
