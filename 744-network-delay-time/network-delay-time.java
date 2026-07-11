@@ -1,60 +1,56 @@
 class Pair{
     int node;
-    int wt;
-
-    public Pair(int node , int wt){
+    int cost;
+    
+    public Pair(int node , int cost){
         this.node = node;
-        this.wt = wt;
+        this.cost = cost;
     }
 }
 class Solution {
     public int networkDelayTime(int[][] times, int n, int k) {
-        int inf = (int)1e9;
-
+        int inf = (int) 1e9;
         ArrayList<ArrayList<Pair>> adj = new ArrayList<>();
 
-        for(int i=0;i<n+1;i++){
+        for(int i = 0 ; i < n + 1;i++){
             adj.add(new ArrayList<>());
         }
 
         for(int t[] : times){
-            adj.get(t[0]).add(new Pair(t[1], t[2]));
+            adj.get(t[0]).add(new Pair(t[1] , t[2]));
         }
 
-        int dist[] = new int[n+1];
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a,b) -> a.cost - b.cost);
 
-        Arrays.fill(dist,inf);
+        int visit[] = new int[n + 1];
 
-        dist[k] = 0;
+        Arrays.fill(visit , inf);
 
-        PriorityQueue<Pair> pq = new PriorityQueue<>((a,b) -> a.wt - b.wt);
+        visit[k] = 0;
 
         pq.add(new Pair(k , 0));
 
+        int max = Integer.MIN_VALUE;
+
         while(pq.size() > 0){
-            int node = pq.peek().node;
-            int wt = pq.peek().wt;
+            Pair p = pq.poll();
+            int node = p.node;
+            int cost = p.cost;
 
-            pq.poll();
-
-            for(int i=0;i<adj.get(node).size();i++){
+            for(int i = 0; i< adj.get(node).size();i++){
                 int curr = adj.get(node).get(i).node;
-                int cost = adj.get(node).get(i).wt;
+                int wt   = adj.get(node).get(i).cost;
 
-                if(dist[curr] > wt  + cost){
-                    dist[curr] = wt + cost;
-                    pq.add(new Pair(curr , wt + cost));
+                if(visit[curr] > wt + cost){
+                    visit[curr] = wt + cost;
+                    pq.add(new Pair(curr , visit[curr]));
                 }
             }
         }
-
-        int ans = 0;
-
-        for(int i=1;i<=n;i++){
-            if(dist[i] == inf) return -1;
-            ans = Math.max(ans , dist[i]);
+        for(int i = 1;i < visit.length;i++){
+            if(visit[i] == inf) return -1;
+            max = Math.max(max , visit[i]);
         }
-
-        return ans;
+        return max;
     }
 }
