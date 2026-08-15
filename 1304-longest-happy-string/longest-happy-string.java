@@ -1,15 +1,15 @@
 class Pair{
     Character ch;
-    int count;
+    int cnt;
 
-    public Pair(Character ch , int count){
+    public Pair(Character ch , int cnt){
         this.ch = ch;
-        this.count = count;
+        this.cnt = cnt;
     }
 }
 class Solution {
     public String longestDiverseString(int a, int b, int c) {
-        PriorityQueue<Pair> pq = new PriorityQueue<>((x,y) -> y.count - x.count);
+        PriorityQueue<Pair> pq = new PriorityQueue<>((x,y) -> y.cnt - x.cnt);
 
         if(a != 0) pq.add(new Pair('a' , a));
         if(b != 0) pq.add(new Pair('b' , b));
@@ -19,27 +19,32 @@ class Solution {
 
         while(pq.size() > 0){
             Pair p = pq.poll();
+
             char ch2 = p.ch;
-            int cnt = p.count;
+            int cnt = p.cnt;
 
-            if(ans.length() >= 2 && ans.charAt(ans.length() -1) == ans.charAt(ans.length() - 2) && ans.charAt(ans.length() -1) == ch2){
-                if(pq.size()  == 0) break;
+            int n = ans.length();
 
+            if(n >= 2 && ans.charAt(n -1) == ans.charAt( n - 2) && ans.charAt(n -1 ) == ch2){  if(pq.size() == 0) break;
                 Pair temp = pq.poll();
-                char ch = temp.ch;
-                int count = temp.count;
+
+                char ch   =  temp.ch;
+                int count = temp.cnt;
 
                 ans += ch;
-                count--;
 
-                if(count > 0) pq.add(new Pair(ch , count));
-                if(cnt > 0) pq.add(new Pair(ch2 , cnt));
+                if(count - 1 > 0){
+                    pq.add(new Pair(ch , count -1));
+                }
+                if(cnt > 0){
+                    pq.add(new Pair(ch2 , cnt));
+                }
             }
             else{
                 ans += ch2;
-                cnt--;
-
-                if(cnt > 0) pq.add(new Pair(ch2 , cnt));
+                if(cnt - 1 > 0){
+                    pq.add(new Pair(ch2 , cnt -1));
+                }
             }
         }
 
