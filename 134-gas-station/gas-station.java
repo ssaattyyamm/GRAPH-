@@ -1,27 +1,32 @@
 class Solution {
     public int canCompleteCircuit(int[] gas, int[] cost) {
         int n = gas.length;
-        int[] diff = new int[n];
 
-        int sum =0;
-        for(int i=0;i<n;i++){
-            diff[i] = gas[i] -cost[i];
-            sum+=diff[i];
+        int tgas = 0;
+        int tcost = 0;
+
+        for(int i = 0 ; i < n ; i++){
+            tgas += gas[i];
+            tcost += cost[i];
         }
 
-        if(sum < 0) return -1; // hence it is poossible to calucalte tha ns
+        if(tgas < tcost) return -1;
 
-        int ans =0;
+        // gas station :
 
-        int max =Integer.MIN_VALUE;
-        int suff =0;
-        for(int i=n-1;i>=0;i--){
-            suff+=diff[i];
-            if(suff > max){
-                max = suff;
-                ans = i;
+        int total = 0;
+        int res = 0;
+
+        for(int i = 0 ; i < n ; i++){
+            total = total + gas[i] - cost[i];
+
+            if(total < 0){
+                res = i + 1;
+                total = 0;
             }
         }
-        return ans;
+
+        return res;
+
     }
 }
